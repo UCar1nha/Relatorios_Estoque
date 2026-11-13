@@ -1,37 +1,40 @@
 import math
 
+
+def _validar_colunas(df, colunas):
+    faltantes = sorted(set(colunas) - set(df.columns))
+    if faltantes:
+        raise ValueError(f"Colunas necessárias para a análise ausentes: {', '.join(faltantes)}")
+
+
 def identificar_baixo_estoque(df):
-    # Verifica itens com estoque atual menor ou igual ao estoque mínimo
-    df_criticos = df[df['qtd_atual'] <= df['qtd_minima']].copy()
-    return df_criticos
+    _validar_colunas(df, ("qtd_atual", "qtd_minima"))
+    return df.loc[df["qtd_atual"] <= df["qtd_minima"]].copy()
+
 
 def calcular_reposicao(df_criticos):
-    # Calcula a quantidade necessária para repor o estoque até o nível ideal
-    if df_criticos.empty:
-        return df_criticos
-    df_criticos['qtd_reposicao'] = df_criticos['qtd_minima'] - df_criticos['qtd_atual']
-    # Calcula caixas a comprar com base na compra mínima.
-    df_criticos['caixas_a_comprar'] = df_criticos.apply(
-        lambda row: math.ceil(row['qtd_reposicao'] / row['compra_minima']) 
-        if row['compra_minima'] > 0 else row['qtd_reposicao'], 
-        axis=1
-    )
-    # Valor total de reposição.
-    df_criticos['custo_reposicao'] = df_criticos['caixas_a_comprar'] * df_criticos['compra_minima'] * df_criticos['valor']
-    return df_criticos
+    colunas = ("qtd_atual", "qtd_ideal", "compra_minima", "valor")
+    _validar_colunas(df_criticos, colunas)
 
-if __name__ == "__main__":
-    # Teste rápido do analyzer simulando dados limpos
-    from cleaner import clean_data
-    try:
-        df_limpo = clean_data("data/raw/estoque_atual.csv")
-        df_criticos = identificar_baixo_estoque(df_limpo)
-        df_resultado = calcular_reposicao(df_criticos)
-        
-        print("\n--- TESTE RÁPIDO: ITENS CRÍTICOS PARA REPOSIÇÃO ---")
-        if not df_resultado.empty:
-            print(df_resultado[['produto', 'qtd_atual', 'qtd_minima', 'caixas_a_comprar', 'custo_reposicao']])
-        else:
-            print("Nenhum item abaixo do estoque mínimo!")
-    except Exception as e:
-        print(f"[ERRO] {e}")
+    resultado = df_criticos.copy()
+    if resultado.empty:
+        resultado["qtd_reposicao"] = []
+        resultado["caixas_a_comprar"] = []
+        resultado["custo_reposicao"] = []
+        return resultado
+
+    if (resultado["compra_minima"] <= 0).any():
+        raise ValueError("'compra_minima' deve ser maior que zero.")
+
+    resultado["qtd_reposicao"] = (
+        resultado["qtd_ideal"] - resultado["qtd_atual"]
+    ).clip(lower=0)
+    resultado["caixas_a_comprar"] = (
+        resultado["qtd_reposicao"] / resultado["compra_minima"]
+    ).map(math.ceil)
+    resultado["custo_reposicao"] = (
+        resultado["caixas_a_comprar"]
+        * resultado["compra_minima"]
+        * resultado["valor"]
+    )
+    return resultado

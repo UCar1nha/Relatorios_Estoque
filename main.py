@@ -1,29 +1,48 @@
-import os
+from pathlib import Path
+
+from src.analyzer import calcular_reposicao, identificar_baixo_estoque
 from src.cleaner import clean_data
-from src.analyzer import identificar_baixo_estoque, calcular_reposicao
+from src.generator import gerar_pdf
+
 
 def main():
-  print("--Iniciando Automacao de Relatorios de Estoque--")
-  arquivo_entrada = "data/raw/estoque_atual.csv"
+    print("-- Iniciando automação de relatórios de estoque --")
+    raiz_projeto = Path(__file__).resolve().parent
+    arquivo_entrada = raiz_projeto / "data" / "raw" / "estoque_atual.csv"
+    caminho_pdf = raiz_projeto / "data" / "processed" / "relatorio_compras.pdf"
 
-  if not os.path.exists(arquivo_entrada):
-        print(f"[ERRO] Arquivo não encontrado em '{arquivo_entrada}'. Verifique se salvou na pasta correta.")
-        return
+    if not arquivo_entrada.is_file():
+        print(f"[ERRO] Arquivo não encontrado: {arquivo_entrada}")
+        return 1
 
-  # Executa a limpeza
-  df_processado = clean_data(arquivo_entrada)
-  #print("\n[INFO] Amostra dos dados após a limpeza:")
-  #print(df_processado[['produto', 'qtd_atual', 'qtd_minima']])
+    df_processado = clean_data(arquivo_entrada)
+    df_criticos = identificar_baixo_estoque(df_processado)
+    df_resultado = calcular_reposicao(df_criticos)
 
-  # Identifica itens com baixo estoque
-  df_criticos = identificar_baixo_estoque(df_processado)
-  #print("\n[INFO] Itens com estoque abaixo do mínimo:")
-  #print(df_criticos[['produto', 'qtd_atual', 'qtd_minima']])
+    print(f"[INFO] Produtos que precisam de reposição: {len(df_resultado)}")
+    if df_resultado.empty:
+        print("[INFO] Nenhum produto está abaixo do estoque mínimo.")
+    else:
+        colunas_relatorio = [
+            "produto",
+            "qtd_atual",
+            "qtd_minima",
+            "qtd_ideal",
+            "caixas_a_comprar",
+            "custo_reposicao",
+        ]
+        print("\n[INFO] Detalhes da reposição:")
+        print(df_resultado[colunas_relatorio].to_string(index=False))
+        custo_total = df_resultado["custo_reposicao"].sum()
+        print(f"[INFO] Custo total estimado para reposição: R$ {custo_total:.2f}")
 
-  # Calcula a reposição necessária
-  df_resultado = calcular_reposicao(df_criticos)
-  print("\n[INFO] Resultado da análise de reposição:")
-  print(df_resultado[['produto', 'qtd_atual', 'qtd_minima', 'caixas_a_comprar', 'custo_reposicao']])
+    resposta = input("\nDeseja gerar o relatório em PDF? (S/N): ").strip().upper()
+    if resposta in {"S", "SIM", "Y", "YES"}:
+        gerar_pdf(df_resultado, caminho_pdf)
+    else:
+        print("[INFO] Geração de PDF cancelada pelo usuário.")
+    return 0
+
 
 if __name__ == "__main__":
-  main()
+    raise SystemExit(main())
