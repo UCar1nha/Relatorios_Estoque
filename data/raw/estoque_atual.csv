@@ -1,0 +1,31 @@
+produto,qtd_atual,qtd_minima,qtd_ideal,valor,fornecedor,compra_minima,ultima_atualizacao
+Milho 25kg,4,3,6,"R$ 276,36",Yoki,3,10/11/2026
+Óleo Soja,85,24,120,"R$ 6,99",Soya,12,10/11/2026
+Achocolatado,15,15,50,"R$ 4,21",Apti Alimentos,6,10/11/2026
+Óleo Concentrado,4,9,12,"R$ 56,00",Yoki,9,10/11/2026
+Sal Micronizado,5,3,10,"R$ 17,90",Norsal,10,10/11/2026
+Coca Cola Lata,43,48,210,"R$ 4,97",Klein Bebidas,12,08/10/2026
+Coca Cola Zero Lata,56,48,200,"R$ 5,01",Klein Bebidas,12,08/10/2026
+Sprite Lata,30,24,100,"R$ 4,72",Klein Bebidas,6,08/10/2026
+Fanta Guaraná Lata,34,24,80,"R$ 4,80",Klein Bebidas,6,08/10/2026
+Fanta Laranja Lata,38,18,60,"R$ 4,56",Klein Bebidas,6,08/10/2026
+Fanta Uva Lata,47,18,60,"R$ 4,65",Klein Bebidas,6,08/10/2026
+Água s/ Gás 500ml,78,48,220,"R$ 0,87",Klein Bebidas,12,08/10/2026
+Água c/ gás 500ml,83,48,200,"R$ 0,93",Klein Bebidas,12,08/10/2026
+Energético Monster Lata,39,12,40,"R$ 8,12",Klein Bebidas,6,08/10/2026
+Matte Leão 450ml,14,6,18,"R$ 4,70",Klein Bebidas,6,08/10/2026
+Desinfetante 5L,1,1,3,"R$ 26,00",Mekal,1,09/11/2026
+Álcool 5L,2,1,2,"R$ 38,70",Mekal,1,09/11/2026
+Limpa-Vidro 5L,3,1,3,"R$ 46,00",Mekal,1,09/11/2026
+Ácido 5L,,1,3,"R$ 70,50",Mekal,1,09/11/2026
+Odorizador 5L,0,1,2,"R$ 46,19",Mekal,1,09/11/2026
+Papel Toalha,4,6,12,"R$ 17,30",Mekal,2,09/11/2026
+Papel Higiênico,12,6,24,"R$ 6,42",Mekal,12,09/11/2026
+Copos 300ml,211,50,500,"R$ 0,09",CopoPlast,100,09/11/2026
+Canudos,547,200,1000,"R$ 6,20",CopoPlast,100,09/11/2026
+Óculos 3D,497,450,500,"R$ 2,65",Cinemark,50,23/06/2025
+Chocolate Nestle,21,7,20,"R$ 5,81",Nestle,12,08/10/2026
+Bala Fini,17,7,20,"R$ 4,87",Fini,12,08/10/2026
+Trento,22,6,16,"R$ 2,13",Doce Passos,16,08/10/2026
+Halls,13,4,21,"R$ 1,59",Doce Passos,21,08/10/2026
+Baldes de Papel 5L,2731,500,2500,"R$ 1,12",Cinemark,200,09/10/2026
